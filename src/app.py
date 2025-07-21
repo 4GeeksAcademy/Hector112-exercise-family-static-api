@@ -28,14 +28,55 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
-
 @app.route('/members', methods=['GET'])
-def handle_hello():
-    # This is how you can use the Family datastructure by calling its methods
-    members = jackson_family.get_all_members()
-    response_body = {"hello": "world",
-                     "family": members}
-    return jsonify(response_body), 200
+def get_members():
+    try:
+        members = jackson_family.get_all_members()
+        if not members:
+            return jsonify({"error": "No hay miembros"}), 404
+        return jsonify(members), 200
+    except Exception as e:
+        return jsonify({"error": "Error del servidor"}), 500
+
+@app.route('/members/<int:member_id>', methods=['GET'])
+def get_member(member_id):
+    try:
+        member = jackson_family.get_member(member_id)
+        if member:
+            return jsonify(member), 200
+        return jsonify({"error": "Miembro no encontrado"}), 404
+    except Exception as e:
+        return jsonify({"error": "Error del servidor"}), 500
+
+@app.route('/members', methods=['POST'])
+def add_member():
+    try:
+        member = request.json
+        if not member or 'first_name' not in member or 'age' not in member or 'lucky_numbers' not in member:
+            return jsonify({"error": "Datos incompletos"}), 400
+        new_member = jackson_family.add_member(member)
+        return jsonify(new_member), 200
+    except Exception as e:
+        return jsonify({"error": "Error del servidor"}), 500
+
+@app.route('/members/<int:member_id>', methods=['DELETE'])
+def delete_member(member_id):
+    try:
+        deleted = jackson_family.delete_member(member_id)
+        if not deleted:
+            return jsonify({"error": "Miembro no encontrado"}), 400
+        body = {"done": True}
+        return jsonify(body), 200
+    except Exception as e:
+        return jsonify({"error": "Error del servidor"}), 500
+
+
+
+
+
+
+
+
 
 
 
