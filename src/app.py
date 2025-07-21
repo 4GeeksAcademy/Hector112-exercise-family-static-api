@@ -65,7 +65,7 @@ def delete_member(member_id):
         deleted = jackson_family.delete_member(member_id)
         if not deleted:
             return jsonify({"error": "Miembro no encontrado"}), 400
-        body = {"done": True}
+        body = {"Se borro el miembro ": member_id}
         return jsonify(body), 200
     except Exception as e:
         return jsonify({"error": "Error del servidor"}), 500
