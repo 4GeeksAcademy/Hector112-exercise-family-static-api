@@ -55,7 +55,8 @@ def add_member():
         if not member or 'first_name' not in member or 'age' not in member or 'lucky_numbers' not in member:
             return jsonify({"error": "Datos incompletos"}), 400
         new_member = jackson_family.add_member(member)
-        return jsonify(new_member), 200
+        body = {"Se agrego el miembro": {"id": new_member['id'], "first_name": new_member['first_name'], "last_name": new_member['last_name'], "age": new_member['age'], "lucky_numbers": new_member['lucky_numbers']}}
+        return jsonify(body), 200
     except Exception as e:
         return jsonify({"error": "Error del servidor"}), 500
 
